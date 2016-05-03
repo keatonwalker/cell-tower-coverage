@@ -1,0 +1,8 @@
+{
+    "name": "Atlas.app",
+    "version": "3.0.0",
+    "main": "main",
+    "description": "AGRC Boilerplate",
+    "homepage": "https://github.com/agrc/AGRCJavaScriptProjectBoilerPlate",
+    "dojoBuild": "app.profile.js"
+}
