@@ -4,7 +4,7 @@ define([
     'agrc/widgets/map/BaseMap',
 
     'app/config',
-    'app/Identify',
+    'app/CoordinateSectorCreator',
 
     'dijit/registry',
     'dijit/_TemplatedMixin',
@@ -31,7 +31,7 @@ define([
     BaseMap,
 
     config,
-    Identify,
+    CoordinateSectorCreator,
 
     registry,
     _TemplatedMixin,
@@ -136,7 +136,10 @@ define([
                             legendLayers: []
                         }
                     }]
-                }, this.printDiv)
+                }, this.printDiv),
+                new CoordinateSectorCreator({
+                    map: this.map
+                }, this.coordinateNode)
             );
 
             this.inherited(arguments);
@@ -210,8 +213,7 @@ define([
                     map: this.map,
                     quadWord: config.quadWord,
                     baseLayers: ['Hybrid', 'Lite', 'Terrain', 'Topo', 'Color IR']
-                }),
-                new Identify({map: this.map})
+                })
             );
         }
     });
