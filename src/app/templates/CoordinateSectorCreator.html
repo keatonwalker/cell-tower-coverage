@@ -2,34 +2,31 @@
   <form data-dojo-attach-point="formNode">
     <div class="show" data-dojo-attach-point="ddNode">
        <div class="form-group">
-         <label>Longitude</label>
+         <label>Longitude (dd)</label>
          <div class="input-group">
           <span class="input-group-addon">-</span>
-          <input type="text" name="x" data-required="true" class="form-control" value="111.6586">
+          <input type="text" name="x" data-required="true" class="form-control" value=>
         </div>
       </div>
       <div class="form-group">
-       <label>Latitude</label>
-       <input type="text" name="y" data-required="true" class="form-control" value="40.2297">
+       <label>Latitude (dd)</label>
+       <input type="text" name="y" data-required="true" class="form-control" value=>
      </div>
      <div class="form-group">
-       <label>Beam Width</label>
+       <label>Beam Width (deg)</label>
        <div class="input-group">
-        <input type="text" name="beamWidth" data-required="true" class="form-control" value="90">
+        <input type="text" name="beamWidth" data-required="true" class="form-control">
       </div>
     </div>
     <div class="form-group">
-     <label>Azimuth</label>
-     <input type="text" name="azimuth" data-required="true" class="form-control" value="45">
+     <label>Azimuth (deg)</label>
+     <input type="text" name="azimuth" data-required="true" class="form-control">
    </div>
      <div class="form-group">
-      <label>Range</label>
-      <input type="text" name="range" data-required="true" class="form-control" value="3218.69">
+      <label>Range (meters)</label>
+      <input type="text" name="range" data-required="true" class="form-control">
     </div>
   </div>
-    <!-- <div class="show" data-dojo-attach-point="coverageNode">
-
-  </div> -->
     <div class="form-group">
       <button class="btn btn-primary disabled text" disabled="true" data-dojo-attach-point="zoomNode" data-dojo-attach-event="click:zoom">Create</button>
     </div>

@@ -70,7 +70,7 @@ define([
         //      the map to zoom
         map: null,
         symbol: null,
-        gl: null,
+        graphicsLayer: null,
 
         postCreate: function () {
             // summary:
@@ -80,8 +80,8 @@ define([
                 throw 'This widget requires an esri/map to be useful.';
             }
             this.symbol = new SimpleFillSymbol().setColor(null).outline.setColor('red');
-            this.gl = new GraphicsLayer({ id: 'sectors' });
-            this.map.addLayer(this.gl);
+            this.graphicsLayer = new GraphicsLayer({ id: 'sectors' });
+            this.map.addLayer(this.graphicsLayer);
 
             this._panelController = {
                 panels: {
@@ -114,7 +114,7 @@ define([
         },
         zoom: function () {
             // summary:
-            //      zooms the map to the point created by _getPoint
+            //      zooms the map to the point created by _getCoverageParams
             //  summary:
             //      the point created by the user input or returned by
             //      the geometry service
@@ -132,9 +132,10 @@ define([
             // reset errors
             //domClass.remove(this.errorNode, ['alert', 'alert-danger', 'text-center']);
             //this.errorNode.innerHTML = '';
-            var coverageParams = this._getPoint();
+            var coverageParams = this._getCoverageParams();
             var point = coverageParams.center;
 
+            //Create coverage area polygon and add it to the graphics layer
             var polygonJson = {
                 'rings': [this._createCircleSector(
                   point.x,
@@ -147,11 +148,12 @@ define([
             };
             console.log(polygonJson);
             var sectorPolygon = webMercatorUtils.geographicToWebMercator(new Polygon(polygonJson));
-            sectorPolygon.setSpatialReference(new SpatialReference({wkid: 3857}));
-            console.log(sectorPolygon);
+            sectorPolygon.setSpatialReference(new SpatialReference({wkid: 3857}));//set spatialReference to web map Web mercator wkid
             var graphic = new Graphic(sectorPolygon, this.symbol);
-            this.gl.add(graphic);
+            this.graphicsLayer.add(graphic);
 
+            //Zoom to sector center point
+            //Maybe change this to zoom to sector polygon extent
             var p = webMercatorUtils.geographicToWebMercator(point);
             p.setSpatialReference(new SpatialReference({wkid: 3857}));
             this.map.centerAndZoom(p, this.zoomLevel);
@@ -167,8 +169,6 @@ define([
             domAttr.remove(this.zoomNode, 'disabled');
 
             return;
-
-            //this._geometryService.project([point], this.map.spatialReference);
         },
         setupConnections: function () {
             // summary:
@@ -180,11 +180,6 @@ define([
                 on(this.formNode, 'submit', function (evt) {
                     events.stop(evt);
                 })
-                // on(this._geometryService,
-                //     'project-complete',
-                //     lang.hitch(this, '_projectionComplete'),
-                //     lang.hitch(this, '_displayError')
-                // )
             );
 
             this.watch('valid', lang.hitch(this, '_enableZoom'));
@@ -201,7 +196,6 @@ define([
         _enableZoom: function (prop, old, value) {
             // summary:
             //      if validate returns true, enable the zoom button
-            // valid
             console.log('app.CoordinateSectorCreator::_enableZoom', arguments);
 
             if (!value) {
@@ -214,7 +208,7 @@ define([
             domClass.remove(this.zoomNode, 'disabled');
             domAttr.remove(this.zoomNode, 'disabled');
         },
-        _getPoint: function () {
+        _getCoverageParams: function () {
             var getValue = function (input, match) {
                 var value = array.filter(input, function (node) {
                     return node.name === match;
@@ -328,7 +322,7 @@ define([
 
             var startAngle = (azimuth + (360 - (beamWidth / 2.0))) % 360;
             var radiusPoints = [];
-            if (beamWidth < 360) {
+            if (beamWidth < 360) {//only use center point if sector is not a full circle
                 radiusPoints.push([long, lat]);
             }
             //Create a point every 1 degree around the arc
